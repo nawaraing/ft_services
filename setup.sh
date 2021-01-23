@@ -1,30 +1,35 @@
-#!/bin/sh
+minikube stop
+minikube delete
 
-echo -e -n "\033[1;37mStarting minikube...\033[0m"
-minikube start --vm=true --vm-driver=docker --extra-config=apiserver.service-node-port-range=1-35000 > /dev/null
-echo -e " \033[32mDone!\033[0m"
-echo -e -n "\033[1;37mEnabling addons...\033[0m"
-minikube addons enable metallb > /dev/null
-minikube addons enable dashboard > /dev/null
-minikube addons enable metrics-server > /dev/null
-echo -e " \033[32mDone!\033[0m"
-echo -e -n "\033[1;37mLaunching dashboard...\033[0m"
-minikube dashboard & > /dev/null
-echo -e " \033[32mDone!\033[0m"
-echo -e "\033[1;37mEval...\033[0m"
-eval $(minikube docker-env) > /dev/null
-echo -e "\033[32mDone!\033[0m"
+minikube start --driver=docker --extra-config=apiserver.service-node-port-range=0-32767
 
-IP=$(kubectl get node -o=custom-columns='DATA:status.addresses[0].address' | sed -n 2p) > /dev/null
-echo -e "\033[1;34mMinikube IP: ${IP}\033[0m"
+eval $(minikube docker-env)
 
-echo -e "\033[1;37mBuilding images...\033[0m"
-docker build -t service_nginx ./imgs/nginx > /dev/null
-echo -e "\033[32mNginx Done!\033[0m"
+minikube dashboard &
 
-echo -e "\033[1;37mCreating pods and services...\033[0m"
-kubectl create -f ./imgs/
-echo -e "\033[32mDone!\033[0m"
+# Building Dockerfile
 
-echo -e  "\033[1;37mOpening the network in your browser\033[0m"
-open http://$IP
+docker build -t nginx_service       ./srcs/nginx
+# docker build -t ftps_service        ./srcs/ftps
+# docker build -t mysql_service       ./srcs/mySql
+# docker build -t wordpress_service   ./srcs/wordpress
+# docker build -t phpmyadmin_service  ./srcs/php_my_admin
+# docker build -t grafana_service     ./srcs/grafana
+# docker build -t influxdb_service    ./srcs/influxdb
+
+# Installing Metallb
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
+
+# On first install only
+kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+
+# Creating Pods and Servic
+kubectl create -f ./srcs/yaml/configMap.yaml
+# kubectl create -f ./srcs/yaml/ftps.yaml
+kubectl create -f ./srcs/yaml/nginx.yaml
+# kubectl create -f ./srcs/yaml/mysql.yaml
+# kubectl create -f ./srcs/yaml/wordpress.yaml
+# kubectl create -f ./srcs/yaml/phpmyadmin.yaml
+# kubectl create -f ./srcs/yaml/grafana.yaml
+# kubectl create -f ./srcs/yaml/influxdb.yaml
