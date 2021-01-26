@@ -36,6 +36,9 @@ echo -e -n "\033[1;37mBuild Pods and Services...\033[0m"
 if	docker build -t nginx srcs/nginx > /dev/null && \
 	docker build -t mysql srcs/mysql > /dev/null && \
 	docker build -t phpmyadmin srcs/phpmyadmin > /dev/null && \
+	docker build -t grafana srcs/grafana > /dev/null && \
+	docker build -t telegraf srcs/telegraf > /dev/null && \
+	docker build -t influxdb srcs/influxdb > /dev/null && \
 	docker build -t wordpress srcs/wordpress > /dev/null; then
 	echo -e "\033[32m Done!\033[0m"
 else
@@ -47,6 +50,9 @@ echo -e -n "\033[1;37mApply Pods and Services...\033[0m"
 if	kubectl apply -f srcs/nginx/nginx.yaml > /dev/null && \
 	kubectl apply -f srcs/mysql/mysql.yaml > /dev/null && \
 	kubectl apply -f srcs/phpmyadmin/phpmyadmin.yaml > /dev/null && \
+	kubectl apply -f srcs/grafana/grafana.yaml > /dev/null && \
+	kubectl apply -f srcs/telegraf/telegraf.yaml > /dev/null && \
+	kubectl apply -f srcs/influxdb/influxdb.yaml > /dev/null && \
 	kubectl apply -f srcs/wordpress/wordpress.yaml > /dev/null; then
 	echo -e "\033[32m Done!\033[0m"
 else
