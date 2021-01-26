@@ -3,7 +3,7 @@ minikube delete > /dev/null;
 echo -e "\033[32m Done!\033[0m"
 
 echo -e -n "\033[1;37mminikube starting...\033[0m"
-if		minikube start --vm-driver=docker > /dev/null; then
+if		minikube start --vm-driver=docker; then
 	echo -e "\033[32m Done!\033[0m"
 else
 	echo -e "\033[31mFail!\033[0m"
