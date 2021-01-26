@@ -1,29 +1,18 @@
-FROM 	alpine:3.12
+FROM	alpine:latest
 
-RUN  	    apk update
-RUN 	    apk add nginx
-RUN	    apk add openssl
-RUN	    apk add openssh
-RUN	    apk add openrc
-RUN         apk add supervisor
+RUN		apk update && apk add nginx ; \
+		apk add --no-cache openrc openssl openssh
 
-RUN	mkdir	-p /run/nginx
-RUN     apk add telegraf --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted --no-cache
-RUN     mkdir -p /etc/telegraf
+RUN		mkdir -p var/run/nginx
 
-COPY    /srcs/build.sh      	./
-COPY    /srcs/telegraf.conf 	/etc/telegraf/
-COPY	/srcs/nginx.key		/etc/ssl/private/nginx.key
-COPY    /srcs/nginx.crt		/etc/ssl/certs/nginx.crt
-COPY 	/srcs/nginx.conf	/etc/nginx/nginx.conf
-COPY    /srcs/supervisord.conf  /etc/supervisord.conf
-COPY    /srcs/sshd_config   	/etc/ssh/sshd_config
-COPY    /srcs/run.sh        	./
+COPY	index.html /www/
 
-EXPOSE      80
-EXPOSE	    22
-EXPOSE      443
+COPY	nginx.conf /etc/nginx/nginx.conf
+COPY	build.sh ./
+COPY	supervisord.conf /etc/supervisord.conf
 
-RUN         chmod +x build.sh
+RUN		openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/example.key -out /etc/nginx/example.crt -subj "/C=KR/ST=IDE/L=Seoul/O=42/OU=42/CN=osef.com" 
 
-CMD         sh build.sh
+EXPOSE	80 22 443
+
+CMD	nginx -g "daemon off;"

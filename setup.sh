@@ -1,35 +1,58 @@
-minikube stop
-minikube delete
+echo -e -n "\033[1;37mminikube deleting...\033[0m"
+minikube delete > /dev/null;
+echo -e "\033[32m Done!\033[0m"
 
-minikube start --driver=docker --extra-config=apiserver.service-node-port-range=0-32767
+echo -e -n "\033[1;37mminikube starting...\033[0m"
+if		minikube start --vm-driver=docker > /dev/null; then
+	echo -e "\033[32m Done!\033[0m"
+else
+	echo -e "\033[31mFail!\033[0m"
+	exit 1
+fi
 
-eval $(minikube docker-env)
+echo -e -n "\033[1;37mEval...\033[0m"
+eval $(minikube docker-env) > /dev/null
+echo -e "\033[32m Done!\033[0m"
 
-minikube dashboard &
+IP="$(kubectl get node -o=custom-columns='DATA:status.addresses[0].address' | sed -n 2p)"
+echo -e "\033[1;34mCluster IP: $IP\033[0m"
 
-# Building Dockerfile
+# echo -e "\033[1;37mChange IP...\033[0m"
+# sed -i 's/172.17.0.3/'$IP'/g' srcs/metallb/metallb.yaml
+# echo -e "\033[32mDone!\033[0m"
 
-docker build -t nginx_service       ./srcs/nginx
-# docker build -t ftps_service        ./srcs/ftps
-# docker build -t mysql_service       ./srcs/mySql
-# docker build -t wordpress_service   ./srcs/wordpress
-# docker build -t phpmyadmin_service  ./srcs/php_my_admin
-# docker build -t grafana_service     ./srcs/grafana
-# docker build -t influxdb_service    ./srcs/influxdb
+echo -e -n "\033[1;37mMetallb applying...\033[0m"
+if	kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml > /dev/null && \
+	kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml > /dev/null && \
+	kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" > /dev/null && \
+	kubectl apply -f srcs/metallb/metallb.yaml > /dev/null;	then
+	echo -e "\033[32m Done!\033[0m"
+else
+	echo -e "\033[31mFail!\033[0m"
+	exit 1
+fi
 
-# Installing Metallb
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
+echo -e -n "\033[1;37mBuild Pods and Services...\033[0m"
+if	docker build -t nginx srcs/nginx > /dev/null && \
+	docker build -t mysql srcs/mysql > /dev/null && \
+	docker build -t phpmyadmin srcs/phpmyadmin > /dev/null && \
+	docker build -t wordpress srcs/wordpress > /dev/null; then
+	echo -e "\033[32m Done!\033[0m"
+else
+	echo -e "\033[31mFail!\033[0m"
+	exit 1
+fi
 
-# On first install only
-kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+echo -e -n "\033[1;37mApply Pods and Services...\033[0m"
+if	kubectl apply -f srcs/nginx/nginx.yaml > /dev/null && \
+	kubectl apply -f srcs/mysql/mysql.yaml > /dev/null && \
+	kubectl apply -f srcs/phpmyadmin/phpmyadmin.yaml > /dev/null && \
+	kubectl apply -f srcs/wordpress/wordpress.yaml > /dev/null; then
+	echo -e "\033[32m Done!\033[0m"
+else
+	echo -e "\033[31mFail!\033[0m"
+	exit 1
+fi
 
-# Creating Pods and Servic
-kubectl create -f ./srcs/yaml/configMap.yaml
-# kubectl create -f ./srcs/yaml/ftps.yaml
-kubectl create -f ./srcs/yaml/nginx.yaml
-# kubectl create -f ./srcs/yaml/mysql.yaml
-# kubectl create -f ./srcs/yaml/wordpress.yaml
-# kubectl create -f ./srcs/yaml/phpmyadmin.yaml
-# kubectl create -f ./srcs/yaml/grafana.yaml
-# kubectl create -f ./srcs/yaml/influxdb.yaml
+minikube dashboard & > /dev/null
+echo -e -n "\033[1;37mOpen dashboard\033[0m"
