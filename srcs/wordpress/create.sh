@@ -12,7 +12,7 @@ if ! $(wp core is-installed); then
         sleep 2;
     done;
 
-    wp core install --url=http://192.168.49.2:5050 --title=ft_services --admin_user=thervieu --admin_password=AStrongPassword123 --admin_email=example@example.com;
+    wp core install --url=http://172.17.0.3:5050 --title=ft_services --admin_user=thervieu --admin_password=AStrongPassword123 --admin_email=example@example.com;
     wp user create author_example author@example.com --role=author ;
     wp user create contributor contributor@example.com --role=contributor;
     wp user create user_1 user1@example.com;

@@ -1,4 +1,4 @@
-FROM	alpine:latest
+FROM	alpine:3.12
 
 RUN		wget https://dl.grafana.com/oss/release/grafana-7.2.1.linux-amd64.tar.gz ; \
 		tar xzvf grafana-7.2.1.linux-amd64.tar.gz ; \
