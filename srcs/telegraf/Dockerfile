@@ -1,16 +1,28 @@
-FROM	alpine:3.12
+FROM alpine:3.12
 
-RUN		wget https://dl.influxdata.com/telegraf/releases/telegraf-1.14.0-static_linux_amd64.tar.gz ; \
-		tar xf telegraf-1.14.0-static_linux_amd64.tar.gz ; \
-		chmod +x telegraf/* ; \
-		mkdir /etc/telegraf ; \
-		cp telegraf/telegraf /usr/bin/ ; \
-		rm telegraf-1.14.0-static_linux_amd64.tar.gz
+RUN apk update && apk upgrade
+RUN apk add wget
 
-RUN		apk add libc6-compat
+RUN wget https://dl.influxdata.com/telegraf/releases/telegraf-1.14.0-static_linux_amd64.tar.gz
+RUN tar -xzf telegraf-1.14.0-static_linux_amd64.tar.gz
+RUN mv /telegraf /etc/
+RUN rm -rf telegraf-1.14.0-static_linux_amd64.tar.gz
 
-COPY	/telegraf.conf /etc/telegraf/telegraf.conf
+COPY ./telegraf.conf /etc/telegraf
 
-COPY	/telegraf.conf /telegraf/telegraf.conf
+WORKDIR /etc/telegraf
+CMD ["./telegraf"]
+#FROM alpine:latest
 
-CMD		/usr/bin/telegraf 
+#RUN apk update \
+#		&& apk upgrade \
+#		&& apk add wget \
+#		&& wget https://dl.influxdata.com/telegraf/releases/telegraf-1.13.3_linux_amd64.tar.gz \
+#		&& tar -xzf telegraf-1.13.3_linux_amd64.tar.gz \
+#		&& rm -rf telegraf-1.13.3_linux_amd64.tar.gz \
+#		&& mv /telegraf/ /etc/ \
+#		&& rm -rf /var/cache/apk/*
+#COPY	telegraf.conf /etc/telegraf
+#COPY	setup.sh ./
+#RUN		chmod 755 setup.sh
+#ENTRYPOINT ./setup.sh

@@ -8,6 +8,7 @@ spec:
   type: LoadBalancer
   selector:
     app: wordpress
+  loadBalancerIP: 192.168.99.20
   ports:
   - port: 5050
     targetPort: 5050
@@ -33,7 +34,7 @@ spec:
     spec:
       containers:
       - name: wordpress
-        image: wordpress
+        image: wordpress-img
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5050

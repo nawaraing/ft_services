@@ -10,15 +10,12 @@ spec:
     app: nginx
   ports:
   - port: 80
-    targetPort: 80
     name: http
     protocol: TCP
   - port: 443
-    targetPort: 443
     name: https
     protocol: TCP
   - port: 30022
-    targetPort: 30022
     name: ssh
     protocol: TCP
 
@@ -42,15 +39,15 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx
+        image: nginx-img
         imagePullPolicy: Never
         ports:
-          - containerPort: 80
-            name: http
-          - containerPort: 443
-            name: https
-          - containerPort: 30022
-            name: ssh
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        - containerPort: 30022
+          name: ssh
         livenessProbe:
           tcpSocket:
             port: 30022
