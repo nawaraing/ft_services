@@ -1,22 +1,24 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: vsftpd
-    labels:
-        app: vsftpd
+  name: vsftpd
+  labels:
+    app: vsftpd
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "sharing key"
 spec:
-    ports:
-    - port: 21
-      name: vsftpd
-    - port: 20
-      name: vsftpd2
-    - port: 10020
-      name: passive
-    - port: 10021
-      name: passive2
-    selector:
-        app: vsftpd
-    type: LoadBalancer
+  ports:
+  - port: 21
+    name: vsftpd
+  - port: 20
+    name: vsftpd2
+  - port: 10020
+    name: passive
+  - port: 10021
+    name: passive2
+  selector:
+      app: vsftpd
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment

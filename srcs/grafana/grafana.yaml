@@ -4,6 +4,8 @@ metadata:
     name: grafana
     labels:
         app: grafana
+    annotations:
+        metallb.universe.tf/allow-shared-ip: "sharing key"
 spec:
     selector:
         app: grafana

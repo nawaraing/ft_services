@@ -10,7 +10,7 @@ RUN apk update \
 		&& apk add curl && apk add jq \
 		&& rm -rf /var/cache/apk/* \
 		&& apk add bash
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj       '/C=KR/ST=42/L=Seoul/O=42/CN=youlee' -keyout /etc/ssl/ftp-selfsigned.key -out /etc/ssl/ftp-selfsigned.crt
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj       '/C=KR/ST=42/L=Seoul/O=42/CN=junkang' -keyout /etc/ssl/ftp-selfsigned.key -out /etc/ssl/ftp-selfsigned.crt
 RUN mkdir -p ftp/user
 COPY start.sh ./
 RUN chmod 755 start.sh
