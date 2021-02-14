@@ -17,7 +17,7 @@ spec:
   - port: 443
     name: https
     protocol: TCP
-  - port: 30022
+  - port: 22
     name: ssh
     protocol: TCP
 
@@ -48,10 +48,10 @@ spec:
           name: http
         - containerPort: 443
           name: https
-        - containerPort: 30022
+        - containerPort: 22
           name: ssh
         livenessProbe:
           tcpSocket:
-            port: 30022
+            port: 22
           initialDelaySeconds: 15
           periodSeconds: 10

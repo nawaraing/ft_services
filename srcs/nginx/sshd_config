@@ -116,4 +116,4 @@ Subsystem	sftp	/usr/lib/ssh/sftp-server
 #	PermitTTY no
 #	ForceCommand cvs server
 
-Port 30022
+Port 22

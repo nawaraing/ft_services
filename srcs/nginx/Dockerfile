@@ -31,4 +31,4 @@ RUN		openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj '/C=KR/ST=42/L=Se
 ENTRYPOINT ./start.sh
 # CMD		nginx -g "daemon off;"
 
-EXPOSE	80 443 30022
+EXPOSE	80 443 22
