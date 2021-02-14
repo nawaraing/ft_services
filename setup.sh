@@ -38,17 +38,17 @@ else
 	exit 1
 fi
 
-sed "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/wordpress/wordpress_config.sql > ./srcs/wordpress/wordpress.sql
+sed "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/wordpress/wordpress_config.sql > ./srcs/wordpress/wordpress.sql > /dev/null
 
 echo -e -n "\033[1;37mBuild Pods and Services...\033[0m"
-if		docker build -t nginx-img ./srcs/nginx/ \
-	&& docker build -t mysql-img ./srcs/mysql/ \
-	&& docker build -t phpmyadmin-img ./srcs/phpmyadmin/ \
-	&& docker build -t wordpress-img ./srcs/wordpress/ \
-	&& docker build -t influxdb-img ./srcs/influxdb/ \
-	&& docker build -t telegraf-img ./srcs/telegraf/ \
-	&& docker build -t grafana-img ./srcs/grafana/ \
-	&& docker build -t ftps-img ./srcs/ftps/; then
+if		docker build -t nginx-img ./srcs/nginx/ > /dev/null \
+	&& docker build -t mysql-img ./srcs/mysql/ > /dev/null \
+	&& docker build -t phpmyadmin-img ./srcs/phpmyadmin/ > /dev/null \
+	&& docker build -t wordpress-img ./srcs/wordpress/ > /dev/null \
+	&& docker build -t influxdb-img ./srcs/influxdb/ > /dev/null \
+	&& docker build -t telegraf-img ./srcs/telegraf/ > /dev/null \
+	&& docker build -t grafana-img ./srcs/grafana/ > /dev/null \
+	&& docker build -t ftps-img ./srcs/ftps/ > /dev/null; then
 	echo -e "\033[32m Done!\033[0m"
 else
 	echo -e "\033[31mFail!\033[0m"
@@ -57,15 +57,15 @@ fi
 
 
 echo -e -n "\033[1;37mApply Pods and Services...\033[0m"
-if		kubectl apply -f srcs/ftps/accounts.yaml \
-	&& kubectl apply -f srcs/nginx/nginx.yaml \
-	&& kubectl apply -f srcs/mysql/mysql.yaml \
-	&& kubectl apply -f srcs/phpmyadmin/phpmyadmin.yaml \
-	&& kubectl apply -f srcs/wordpress/wordpress.yaml \
-	&& kubectl apply -f srcs/influxdb/influxdb.yaml \
-	&& kubectl apply -f srcs/telegraf/telegraf.yaml \
-	&& kubectl apply -f srcs/grafana/grafana.yaml \
-	&& kubectl apply -f srcs/ftps/ftps.yaml; then # user password
+if		kubectl apply -f srcs/ftps/accounts.yaml > /dev/null \
+	&& kubectl apply -f srcs/nginx/nginx.yaml > /dev/null \
+	&& kubectl apply -f srcs/mysql/mysql.yaml > /dev/null \
+	&& kubectl apply -f srcs/phpmyadmin/phpmyadmin.yaml > /dev/null \
+	&& kubectl apply -f srcs/wordpress/wordpress.yaml > /dev/null \
+	&& kubectl apply -f srcs/influxdb/influxdb.yaml > /dev/null \
+	&& kubectl apply -f srcs/telegraf/telegraf.yaml > /dev/null \
+	&& kubectl apply -f srcs/grafana/grafana.yaml > /dev/null \
+	&& kubectl apply -f srcs/ftps/ftps.yaml > /dev/null; then # user password
 	echo -e "\033[32m Done!\033[0m"
 else
 	echo -e "\033[31mFail!\033[0m"
