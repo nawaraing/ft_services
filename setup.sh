@@ -1,5 +1,5 @@
 #!/bin/bash
-# export MINIKUBE_HOME=/Users/junkang/goinfre
+export MINIKUBE_HOME=/Users/junkang/goinfre
 
 echo -e -n "\033[1;37mminikube deleting...\033[0m"
 minikube delete > /dev/null;
