@@ -1,5 +1,5 @@
 #!/bin/bash
-export MINIKUBE_HOME=/Users/junkang/goinfre
+# export MINIKUBE_HOME=/Users/junkang/goinfre
 
 echo -e -n "\033[1;37mminikube deleting...\033[0m"
 minikube delete > /dev/null;
@@ -38,7 +38,7 @@ else
 	exit 1
 fi
 
-sed "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/wordpress/wordpress_config.sql > ./srcs/wordpress/wordpress.sql > /dev/null
+sed "s/MINIKUBE_IP/$MINIKUBE_IP/g" ./srcs/wordpress/wordpress_config.sql > ./srcs/wordpress/wordpress.sql
 
 echo -e -n "\033[1;37mBuild Pods and Services...\033[0m"
 if		docker build -t nginx-img ./srcs/nginx/ > /dev/null \
